@@ -12,7 +12,7 @@ public static class CreateBookingEndpoint
             CancellationToken ct) =>
         {
             var command = new CreateBookingCommand(
-                roomId, request.BookedBy, request.StartUtc, request.EndUtc, request.Attendees);
+                roomId, request.BookedBy, ToUtc(request.StartUtc), ToUtc(request.EndUtc), request.Attendees);
 
             var result = await handler.Handle(command, ct);
 
@@ -20,4 +20,12 @@ public static class CreateBookingEndpoint
                 ? Results.Created($"/api/bookings/{result.Value.Id}", result.Value)
                 : result.ToProblem();
         });
+
+    // JSON with an offset ("+02:00") arrives as server local time; without an offset it is already UTC per the contract.
+    private static DateTime ToUtc(DateTime value) => value.Kind switch
+    {
+        DateTimeKind.Local => value.ToUniversalTime(),
+        DateTimeKind.Unspecified => DateTime.SpecifyKind(value, DateTimeKind.Utc),
+        _ => value
+    };
 }
