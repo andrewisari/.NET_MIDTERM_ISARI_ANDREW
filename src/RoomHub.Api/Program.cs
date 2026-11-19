@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<RoomRepository>();
 builder.Services.AddSingleton<BookingRepository>();
 
+builder.Services.AddSingleton(TimeProvider.System);
+
 builder.Services.AddRoomsFeature();
 builder.Services.AddBookingsFeature();
 
