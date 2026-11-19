@@ -2,6 +2,8 @@
 
 Write down, in order, what you asked the AI. It is not a punishment: a missing or false log lowers the level D grade.
 
+Models Used: Fable 5.2 and Opus 5.5 (I orchestrated multiple instances using a custom built UI i found on a GitHub repo on reddit)
+
 | Time (approx.) | What you asked (briefly) | What you kept | What you changed or rejected |
 |---|---|---|---|
 | 2m 14s | I ran a custom skill inside claude code callled "/exam-start", the reason I prepped these skill was to run an inittial commit and analyze the codebase, and run an initial build, call all enpoints. | Well nothing changed in the code, so all that happened is I got a quick rundown of what exactly the code does, and where everything is located. | There are no changes this session .|
@@ -11,5 +13,5 @@ Write down, in order, what you asked the AI. It is not a punishment: a missing o
 | 5m 11s| I started the bug fixes by using another skill i made called "/exam-bugs-fix" and named the exact bug in the list, i did this for each on so I just wrote the total time for the run for all the initial starter bugs. | I kept most of the code and made slight changes to adhere to what the broken features should do. Currently only 5 are fixed.| I changed the order in whcih the AI model wanted to approach beacue i found it easier to run 1 agent for each of these bugs and let them communicate with each other so they don't break the codebase.|
 | 2m 27s| Ran bug fix for "/exam-bugs-fix 6"  and "/exam-bugs-fix 7" at a later time than the other to first check that everything was working before i continued.| Same reasoning as above.| same reasoning as above|
 | 1m 35s| I ran a skill called "/exam-feature" which analyzez the second feature given.| Given the new feature it made the changes requested by the professor.| The new rule and feature was added.|
-| 1m 17s| I ran a skill called "/exam-feature" which analyzez the third feature given.| Given the new feature it made the changes requested by the professor.| The new rule and feature was added.|
+| 1m 32s| I ran a skill called "/exam-feature" which analyzez the third feature given.| Given the new feature it made the changes requested by the professor.| The new rule and feature was added.|
 
