@@ -11,7 +11,6 @@ public enum BookingStatus
 
 public sealed class Booking
 {
-    public static readonly TimeSpan MaxDuration = TimeSpan.FromHours(4);
     public const int MaxActivePerParticipantPerDay = 2;
 
     private Booking() { } // for EF Core
@@ -52,7 +51,8 @@ public sealed class Booking
         if (attendees <= 0) return BookingErrors.AttendeesNotPositive;                       // R4
         if (attendees > room.Capacity) return BookingErrors.AttendeesExceedCapacity;         // R4
         if (startUtc < nowUtc) return BookingErrors.StartInPast;                             // R5
-        if (endUtc - startUtc > MaxDuration) return BookingErrors.TooLong;                   // R6
+        if (endUtc - startUtc > room.MaxBookingDuration)                                     // R6, R10
+            return BookingErrors.TooLong(room.MaxBookingDuration);
 
         if (roomBookings.Any(b => b.Status == BookingStatus.Active && b.OverlapsWith(startUtc, endUtc)))
             return BookingErrors.RoomOccupied;                                               // R7

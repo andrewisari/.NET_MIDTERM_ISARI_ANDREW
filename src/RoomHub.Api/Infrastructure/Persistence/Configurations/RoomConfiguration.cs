@@ -12,5 +12,6 @@ public sealed class RoomConfiguration : IEntityTypeConfiguration<Room>
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id).ValueGeneratedNever(); // the domain creates the Guid
         builder.Property(r => r.Name).HasMaxLength(200).IsRequired();
+        builder.Ignore(r => r.MaxBookingDuration); // computed from Capacity, not stored
     }
 }
