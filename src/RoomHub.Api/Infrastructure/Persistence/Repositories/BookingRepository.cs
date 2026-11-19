@@ -12,5 +12,17 @@ public sealed class BookingRepository(AppDbContext db) : IBookingRepository
     public async Task<IReadOnlyList<Booking>> ListForRoomAsync(Guid roomId, CancellationToken ct) =>
         await db.Bookings.AsNoTracking().Where(b => b.RoomId == roomId).ToListAsync(ct);
 
+    // Bookings of one participant, in any room, that start on the given UTC day.
+    public async Task<IReadOnlyList<Booking>> ListForParticipantOnDayAsync(
+        string bookedBy, DateTime dayUtc, CancellationToken ct)
+    {
+        var dayStart = dayUtc.Date;
+        var nextDay = dayStart.AddDays(1);
+
+        return await db.Bookings.AsNoTracking()
+            .Where(b => b.BookedBy == bookedBy && b.StartUtc >= dayStart && b.StartUtc < nextDay)
+            .ToListAsync(ct);
+    }
+
     public void Add(Booking booking) => db.Bookings.Add(booking);
 }

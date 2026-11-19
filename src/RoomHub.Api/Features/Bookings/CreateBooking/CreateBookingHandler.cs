@@ -20,6 +20,11 @@ public sealed class CreateBookingHandler(
 
         var roomBookings = await bookings.ListForRoomAsync(command.RoomId, ct);
 
+        // R9 needs the participant's other bookings that day; the domain decides with them.
+        IReadOnlyList<Booking> participantBookings = string.IsNullOrWhiteSpace(command.BookedBy)
+            ? []
+            : await bookings.ListForParticipantOnDayAsync(command.BookedBy.Trim(), command.StartUtc, ct);
+
         var created = Booking.Create(
             room,
             command.BookedBy,
@@ -27,7 +32,8 @@ public sealed class CreateBookingHandler(
             command.EndUtc,
             command.Attendees,
             timeProvider.GetUtcNow().UtcDateTime,
-            roomBookings);
+            roomBookings,
+            participantBookings);
         if (created.IsFailure) return created.Error;
 
         var booking = created.Value;
