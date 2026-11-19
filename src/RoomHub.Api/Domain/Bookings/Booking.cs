@@ -12,6 +12,7 @@ public enum BookingStatus
 public sealed class Booking
 {
     public const int MaxActivePerParticipantPerDay = 2;
+    public static readonly TimeSpan MinCancellationNotice = TimeSpan.FromMinutes(60);
 
     private Booking() { } // for EF Core
 
@@ -71,9 +72,11 @@ public sealed class Booking
         StartUtc < endUtc && startUtc < EndUtc;
 
     // R8: only an active booking can be cancelled.
-    public Result Cancel()
+    // R11: and only if it starts at least 60 minutes after nowUtc (from TimeProvider in the handler).
+    public Result Cancel(DateTime nowUtc)
     {
         if (Status == BookingStatus.Cancelled) return BookingErrors.AlreadyCancelled;
+        if (StartUtc - nowUtc < MinCancellationNotice) return BookingErrors.CancellationTooLate;
 
         Status = BookingStatus.Cancelled;
         return Result.Success();
