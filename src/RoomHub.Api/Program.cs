@@ -1,19 +1,18 @@
 using RoomHub.Api.Features.Bookings;
 using RoomHub.Api.Features.Rooms;
-using RoomHub.Api.Repositories;
+using RoomHub.Api.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// In-memory stores until the persistence stage.
-builder.Services.AddSingleton<RoomRepository>();
-builder.Services.AddSingleton<BookingRepository>();
-
+builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 
 builder.Services.AddRoomsFeature();
 builder.Services.AddBookingsFeature();
 
 var app = builder.Build();
+
+app.Services.CreateDatabase();
 
 app.MapGet("/", () => "RoomHub API is running.");
 app.MapRoomsEndpoints();

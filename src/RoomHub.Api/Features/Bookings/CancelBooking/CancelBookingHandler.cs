@@ -1,17 +1,21 @@
 using RoomHub.Api.Common;
+using RoomHub.Api.Domain.Abstractions;
 using RoomHub.Api.Domain.Bookings;
-using RoomHub.Api.Repositories;
 
 namespace RoomHub.Api.Features.Bookings.CancelBooking;
 
-public sealed class CancelBookingHandler(BookingRepository bookings) : ICommandHandler<CancelBookingCommand>
+public sealed class CancelBookingHandler(IBookingRepository bookings, IUnitOfWork unitOfWork)
+    : ICommandHandler<CancelBookingCommand>
 {
-    public Task<Result> Handle(CancelBookingCommand command, CancellationToken ct)
+    public async Task<Result> Handle(CancelBookingCommand command, CancellationToken ct)
     {
-        var booking = bookings.Get(command.Id);
-        if (booking is null)
-            return Task.FromResult<Result>(BookingErrors.NotFound(command.Id));
+        var booking = await bookings.GetByIdAsync(command.Id, ct);
+        if (booking is null) return BookingErrors.NotFound(command.Id);
 
-        return Task.FromResult(booking.Cancel());
+        var cancelled = booking.Cancel();
+        if (cancelled.IsFailure) return cancelled;
+
+        await unitOfWork.SaveChangesAsync(ct);
+        return Result.Success();
     }
 }

@@ -4,4 +4,5 @@ Write down, in order, what you asked the AI. It is not a punishment: a missing o
 
 | Time (approx.) | What you asked (briefly) | What you kept | What you changed or rejected |
 |---|---|---|---|
-| _(fill in)_ | I ran a custom skill inside claude code callled "/exam-start", the reason I prepped these skill was to run an inittial commit and analyze the codebase, and run an initial build, call all enpoints. | Well nothing changed in the code, so all that happened is I got a quick rundown of what exactly the code does, and where everything is located. | There are no changes this session |
+| 2:14 mins | I ran a custom skill inside claude code callled "/exam-start", the reason I prepped these skill was to run an inittial commit and analyze the codebase, and run an initial build, call all enpoints. | Well nothing changed in the code, so all that happened is I got a quick rundown of what exactly the code does, and where everything is located. | There are no changes this session |
+| | After the initial run of the prompt it prompted me with a plan which I then told to run 3 subagents to start working on the 5 slices.| Most of|---|

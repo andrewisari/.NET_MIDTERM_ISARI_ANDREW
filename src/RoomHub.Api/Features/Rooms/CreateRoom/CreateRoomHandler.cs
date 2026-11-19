@@ -1,18 +1,21 @@
 using RoomHub.Api.Common;
+using RoomHub.Api.Domain.Abstractions;
 using RoomHub.Api.Domain.Rooms;
-using RoomHub.Api.Repositories;
 
 namespace RoomHub.Api.Features.Rooms.CreateRoom;
 
-public sealed class CreateRoomHandler(RoomRepository rooms) : ICommandHandler<CreateRoomCommand, RoomResponse>
+public sealed class CreateRoomHandler(IRoomRepository rooms, IUnitOfWork unitOfWork)
+    : ICommandHandler<CreateRoomCommand, RoomResponse>
 {
-    public Task<Result<RoomResponse>> Handle(CreateRoomCommand command, CancellationToken ct)
+    public async Task<Result<RoomResponse>> Handle(CreateRoomCommand command, CancellationToken ct)
     {
         var created = Room.Create(command.Name, command.Capacity);
-        if (created.IsFailure)
-            return Task.FromResult<Result<RoomResponse>>(created.Error);
+        if (created.IsFailure) return created.Error;
 
-        rooms.Add(created.Value);
-        return Task.FromResult<Result<RoomResponse>>(RoomResponse.From(created.Value));
+        var room = created.Value;
+        rooms.Add(room);
+        await unitOfWork.SaveChangesAsync(ct);
+
+        return RoomResponse.From(room);
     }
 }

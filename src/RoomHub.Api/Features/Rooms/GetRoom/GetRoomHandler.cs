@@ -1,17 +1,15 @@
 using RoomHub.Api.Common;
 using RoomHub.Api.Domain.Rooms;
-using RoomHub.Api.Repositories;
 
 namespace RoomHub.Api.Features.Rooms.GetRoom;
 
-public sealed class GetRoomHandler(RoomRepository rooms) : IQueryHandler<GetRoomQuery, RoomResponse>
+public sealed class GetRoomHandler(IRoomRepository rooms) : IQueryHandler<GetRoomQuery, RoomResponse>
 {
-    public Task<Result<RoomResponse>> Handle(GetRoomQuery query, CancellationToken ct)
+    public async Task<Result<RoomResponse>> Handle(GetRoomQuery query, CancellationToken ct)
     {
-        var room = rooms.Get(query.Id);
-        if (room is null)
-            return Task.FromResult<Result<RoomResponse>>(RoomErrors.NotFound(query.Id));
+        var room = await rooms.GetByIdAsync(query.Id, ct);
+        if (room is null) return RoomErrors.NotFound(query.Id);
 
-        return Task.FromResult<Result<RoomResponse>>(RoomResponse.From(room));
+        return RoomResponse.From(room);
     }
 }
